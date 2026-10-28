@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Lanterna: Pădurea fără sfârșit</title>
+<style>
+:root{--bg:#06101c;--panel:#0d2033;--panel2:#102b42;--line:#24506b;--cyan:#45e5e5;--gold:#ffc83d;--text:#edf8ff;--muted:#a6c0d2;--red:#ff5c71;--green:#55f0a5}
+*{box-sizing:border-box}body{margin:0;background:radial-gradient(ellipse at top,#123451,#050b14 70%);color:var(--text);font-family:system-ui,-apple-system,Segoe UI,sans-serif;min-height:100vh}
+button,input{font:inherit}button{cursor:pointer;border:1px solid #34708f;border-radius:12px;background:linear-gradient(#174262,#0b2439);color:var(--text);padding:11px 14px;font-weight:750;transition:.15s}button:hover{filter:brightness(1.2)}button:active{transform:scale(.98)}button.primary{background:linear-gradient(#ffe47a,#ffb51f);color:#261900;border-color:#ffe47a}button:disabled{opacity:.45;cursor:not-allowed}
+#app{max-width:1100px;margin:auto;padding:14px}.top{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;padding:12px;background:#091827dd;border:1px solid var(--line);border-radius:16px;margin-bottom:12px}.brand{font-size:clamp(23px,5vw,36px);font-weight:1000;letter-spacing:2px;color:var(--gold);text-shadow:0 0 18px #ffbb3855}.stats{display:flex;gap:8px;flex-wrap:wrap}.pill{padding:8px 11px;background:#10283c;border:1px solid #254c66;border-radius:999px;font-weight:800}.layout{display:grid;grid-template-columns:225px minmax(0,1fr);gap:12px}.nav,.panel{background:linear-gradient(145deg,#10263a,#081624);border:1px solid var(--line);border-radius:16px;padding:13px}.nav{display:flex;flex-direction:column;gap:8px}.nav button{text-align:left}.nav button.active{border-color:var(--cyan);box-shadow:0 0 0 1px #45e5e533 inset;color:var(--cyan)}main{min-width:0}.view{display:none}.view.active{display:block}.hero{padding:22px 8px;text-align:center}.hero .emoji{font-size:74px;filter:drop-shadow(0 0 20px #ffd54b99)}h1,h2,h3,p{margin-top:0}h2{margin-bottom:8px}.muted{color:var(--muted)}.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:10px}.card{background:linear-gradient(145deg,#102d44,#0a1a2a);border:1px solid #28536e;border-radius:14px;padding:14px}.card h3{margin-bottom:7px}.row{display:flex;align-items:center;justify-content:space-between;gap:8px}.progress{height:9px;background:#03101b;border-radius:99px;overflow:hidden;margin:10px 0}.progress span{display:block;height:100%;background:linear-gradient(90deg,#31d8a1,#d6ff68);width:0;transition:width .2s}.mission{margin:10px 0}.mission small{color:var(--muted)}.mission button{padding:7px 10px}.worldmap{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;margin-top:14px}.level{min-height:88px;text-align:center}.level.locked{opacity:.45}.level .star{color:var(--gold)}#gameWrap{position:relative;max-width:800px;margin:auto}#game{width:100%;display:block;border:1px solid #275b78;border-radius:14px;background:#020912;touch-action:none}#hud{display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap;margin-bottom:9px}.gamebuttons{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin-top:10px}.mobileControls{display:flex;justify-content:space-between;gap:14px;margin-top:10px}.mobileControls button{min-width:60px;min-height:54px;font-size:21px;touch-action:none}.log{min-height:26px;color:var(--cyan);text-align:center;margin:10px 0}.skin{font-size:36px}.small{font-size:13px}.danger{color:var(--red)}.good{color:var(--green)}.friendInput{display:flex;gap:8px;flex-wrap:wrap}.friendInput input{min-width:0;flex:1;padding:11px;border-radius:10px;border:1px solid #34708f;background:#061421;color:white}.footer{text-align:center;color:#7997ad;font-size:12px;padding:20px}
+@media(max-width:700px){#app{padding:8px}.layout{grid-template-columns:1fr}.nav{display:grid;grid-template-columns:repeat(3,1fr);padding:8px}.nav button{text-align:center;padding:9px 4px;font-size:13px}.top{padding:10px}.stats{gap:5px}.pill{font-size:12px;padding:6px 8px}.hero{padding:12px 4px}.worldmap{grid-template-columns:repeat(2,1fr)}}
+</style>
+</head>
+<body>
+<div id="app">
+<header class="top">
+  <div><div class="brand">🔦 LANTERNA</div><div class="muted small">Pădurea fără sfârșit · survival horror</div></div>
+  <div class="stats"><span class="pill">⭐ Nivel <b id="levelStat">1</b></span><span class="pill">🪙 <b id="coinStat">0</b></span><span class="pill">💎 <b id="gemStat">0</b></span></div>
+</header>
+<div class="layout">
+<nav class="nav">
+<button data-view="home" class="active">🏕️ Acasă</button>
+<button data-view="play">🌲 Joacă</button>
+<button data-view="missions">📜 Misiuni</button>
+<button data-view="map">🗺️ Hartă</button>
+<button data-view="shop">🎒 Magazin</button>
+<button data-view="friends">👥 Prieteni</button>
+<button data-view="stats">🏆 Progres</button>
+</nav>
+<main>
+<section id="home" class="view active panel">
+ <div class="hero"><div class="emoji">🏮</div><h1>Nu lăsa lumina să se stingă.</h1><p class="muted">Adună baterii, găsește relicve, evită Umbra și descoperă ce s-a întâmplat în pădure.</p><button class="primary" style="min-width:200px" onclick="startGame()">ÎNCEPE EXPEDIȚIA</button></div>
+ <div class="grid">
+  <div class="card"><h3>🎯 Obiectivul tău</h3><p class="muted">Supraviețuiește, găsește 3 relicve și ajunge la ieșire.</p></div>
+  <div class="card"><h3>📈 Progres salvat</h3><p class="muted">Monedele, nivelul, skin-urile și misiunile se salvează în acest browser.</p></div>
+  <div class="card"><h3>👁️ Atenție!</h3><p class="muted">Umbra te urmărește. Lumina lanternei o ține la distanță pentru scurt timp.</p></div>
+ </div>
+ <p class="log" id="homeMessage"></p>
+</section>
+<section id="play" class="view panel">
+ <div id="hud"><span class="pill">❤️ <b id="hp">3</b></span><span class="pill">🔋 <b id="battery">100</b>%</span><span class="pill">🪙 <b id="runCoins">0</b></span><span class="pill">🧿 <b id="relics">0</b>/3</span><span class="pill">⏱️ <b id="timer">0</b>s</span></div>
+ <div id="gameWrap"><canvas id="game" width="800" height="480" aria-label="Joc Lanterna"></canvas></div>
+ <div class="mobileControls"><button id="left">◀</button><button id="up">▲</button><button id="light">🔦 Lumină</button><button id="down">▼</button><button id="right">▶</button></div>
+ <div class="gamebuttons"><button onclick="startGame()" class="primary">↻ Reîncepe expediția</button><button onclick="togglePause()">Ⅱ Pauză</button><button onclick="showView('map')">🗺️ Hartă</button></div>
+ <p class="log" id="gameMessage">Apasă „Începe expediția” pentru a intra în pădure.</p>
+ <p class="muted small">PC: WASD/săgeți pentru mișcare, SPACE pentru lanternă. Telefon: folosește butoanele de mai sus.</p>
+</section>
+<section id="missions" class="view panel"><h2>📜 Jurnalul misiunilor</h2><p class="muted">Completează obiectivele ca să câștigi monede și XP. Misiunile se actualizează pe măsură ce joci.</p><div id="missionList"></div><button onclick="claimAll()" class="primary">Revendică recompense disponibile</button></section>
+<section id="map" class="view panel"><h2>🗺️ Pădurea interzisă</h2><p class="muted">Fiecare zonă aduce pericole noi. Supraviețuiește într-o zonă pentru a debloca următoarea.</p><div id="worldmap" class="worldmap"></div><div class="card" style="margin-top:12px"><h3>📖 Poveste</h3><p id="story" class="muted">Capitolul I: În urmă cu 17 ani, satul a dispărut într-o singură noapte. Singurul lucru rămas aprins a fost o lanternă.</p></div></section>
+<section id="shop" class="view panel"><h2>🎒 Magazinul supraviețuitorului</h2><p class="muted">Cumpără aparențe și îmbunătățiri cu monedele strânse în joc.</p><div id="shopList" class="grid"></div></section>
+<section id="friends" class="view panel"><h2>👥 Prieteni și provocări</h2><p class="muted">Poți salva nume de prieteni local și compara scorurile pe același dispozitiv. Acesta nu este încă multiplayer online; pentru conectare între telefoane trebuie adăugat un backend.</p><div class="card"><h3>Adaugă un prieten</h3><div class="friendInput"><input id="friendName" maxlength="24" placeholder="Numele prietenului"><button class="primary" onclick="addFriend()">Adaugă</button></div><div id="friendList" style="margin-top:12px"></div></div><div class="card" style="margin-top:12px"><h3>⚔️ Provocare săptămânală</h3><p>Încearcă să obții cel mai mare scor într-o singură expediție.</p><div class="row"><span>Recordul tău</span><b id="friendScore">0</b></div></div></section>
+<section id="stats" class="view panel"><h2>🏆 Cariera ta</h2><div class="grid"><div class="card"><div class="muted">Expediții</div><h2 id="statRuns">0</h2></div><div class="card"><div class="muted">Record scor</div><h2 id="statBest">0</h2></div><div class="card"><div class="muted">Monede totale câștigate</div><h2 id="statEarned">0</h2></div><div class="card"><div class="muted">Relicve găsite</div><h2 id="statRelics">0</h2></div></div><h3 style="margin-top:18px">Insigne</h3><div id="badges" class="grid"></div><button style="margin-top:14px" onclick="resetSave()">Resetează progresul</button></section>
+</main>
+</div><div class="footer">LANTERNA · prototip HTML autonom · progres salvat local pe dispozitiv</div>
+</div>
+<script>
+const $=id=>document.getElementById(id);
+const SAVEKEY='lanterna_save_v2';
+const defaultSave={coins:0,gems:0,xp:0,level:1,runs:0,best:0,earned:0,relics:0,unlocked:1,skin:'Standard',owned:['Standard'],upgrades:{battery:0,range:0},missions:{coins:0,runs:0,relics:0,survive:0},claimed:[],friends:[],zone:1};
+let save;
+try{save={...defaultSave,...JSON.parse(localStorage.getItem(SAVEKEY)||'{}')};}catch(e){save={...defaultSave};}
+let game={running:false,paused:false,over:false,x:70,y:240,hp:3,battery:100,coins:0,relics:0,seconds:0,score:0,flash:0,shadowX:700,shadowY:240,items:[],trees:[],zone:1,last:0,raf:0};
+const canvas=$('game'),ctx=canvas.getContext('2d');
+const zones=[
+ {name:'Pădurea întunecată',desc:'Umbre lente, multe baterii.',color:'#071c26'},
+ {name:'Satul uitat',desc:'Drumuri înguste și relicve rare.',color:'#201b2b'},
+ {name:'Minele albastre',desc:'Mai puțină lumină. Umbra se mișcă mai repede.',color:'#07172e'},
+ {name:'Lacul fără fund',desc:'Ultimul loc cunoscut al sătenilor.',color:'#081f2a'},
+ {name:'Turnul de veghe',desc:'Adevărul te așteaptă în vârf.',color:'#211626'},
+ {name:'Inima Umbrei',desc:'Supraviețuiește și încheie povestea.',color:'#260f1a'}
+];
+const missions=[
+ {id:'coins',title:'Strânge 25 de monede',desc:'Adună monede în expediții.',goal:25,reward:60,xp:20},
+ {id:'runs',title:'Ieși în 3 expediții',desc:'Fiecare încercare te învață ceva.',goal:3,reward:80,xp:30},
+ {id:'relics',title:'Găsește 5 relicve',desc:'Relicvele sunt obiecte albastre strălucitoare.',goal:5,reward:100,xp:40},
+ {id:'survive',title:'Supraviețuiește 90 de secunde',desc:'Folosește lanterna când Umbra se apropie.',goal:90,reward:120,xp:50}
+];
+const skins=[
+ {name:'Standard',icon:'🏮',price:0,color:'#ffd34e',desc:'Lanterna de început'},
+ {name:'Neon',icon:'🔵',price:120,color:'#49e8ff',desc:'Lumină albastră'},
+ {name:'Crimson',icon:'🔴',price:220,color:'#ff566f',desc:'Roșu ca avertismentul'},
+ {name:'Spectru',icon:'🟣',price:400,color:'#c38bff',desc:'O strălucire misterioasă'},
+ {name:'Auriu',icon:'🌟',price:750,color:'#ffe889',desc:'Pentru exploratori veterani'}
+];
+function persist(){localStorage.setItem(SAVEKEY,JSON.stringify(save));renderAll();}
+function xpAdd(n){save.xp+=n;save.level=1+Math.floor(save.xp/150);}
+function showView(name){document.querySelectorAll('.view').forEach(v=>v.classList.toggle('active',v.id===name));document.querySelectorAll('.nav button').forEach(b=>b.classList.toggle('active',b.dataset.view===name));if(name==='play')draw();}
+document.querySelectorAll('.nav button').forEach(b=>b.addEventListener('click',()=>showView(b.dataset.view)));
+function renderAll(){ $('levelStat').textContent=save.level;$('coinStat').textContent=save.coins;$('gemStat').textContent=save.gems;
+ $('statRuns').textContent=save.runs;$('statBest').textContent=save.best;$('statEarned').textContent=save.earned;$('statRelics').textContent=save.relics;$('friendScore').textContent=save.best;
+ renderMissions();renderMap();renderShop();renderFriends();renderBadges();}
+function missionValue(id){return save.missions[id]||0}
+function renderMissions(){ $('missionList').innerHTML=missions.map(m=>{let v=Math.min(missionValue(m.id),m.goal),done=v>=m.goal,claimed=save.claimed.includes(m.id);return `<div class="card mission"><div class="row"><h3>${m.title}</h3><b>${claimed?'✅':done?'🎁':'🪙 '+m.reward}</b></div><small>${m.desc}</small><div class="progress"><span style="width:${100*v/m.goal}%"></span></div><div class="row"><small>${v} / ${m.goal}</small><button ${(!done||claimed)?'disabled':''} onclick="claimMission('${m.id}')">${claimed?'Revendicată':done?'Revendică':'În progres'}</button></div></div>`}).join('');}
+function claimMission(id){let m=missions.find(x=>x.id===id);if(!m||save.claimed.includes(id)||missionValue(id)<m.goal)return;save.claimed.push(id);save.coins+=m.reward;save.earned+=m.reward;xpAdd(m.xp);persist();$('homeMessage').textContent='Misiune completată: '+m.title+'!';}
+function claimAll(){missions.forEach(m=>{if(!save.claimed.includes(m.id)&&missionValue(m.id)>=m.goal){save.claimed.push(m.id);save.coins+=m.reward;save.earned+=m.reward;xpAdd(m.xp);}});persist();}
+function renderMap(){$('worldmap').innerHTML=zones.map((z,i)=>{let n=i+1,locked=n>save.unlocked;return `<button class="level ${locked?'locked':''}" ${locked?'disabled':''} onclick="selectZone(${n})"><div style="font-size:26px">${locked?'🔒':['🌲','🏚️','⛏️','🌊','🗼','🕳️'][i]}</div><b>${n}. ${z.name}</b><div class="small">${locked?'Blocat':z.desc}</div><div class="star">${n<save.unlocked?'★★★':'★☆☆'}</div></button>`}).join('');}
+function selectZone(n){save.zone=n;persist();$('story').textContent='Capitolul '+n+': '+zones[n-1].desc+' Descoperă următorul indiciu în expediție.';startGame();}
+function renderShop(){$('shopList').innerHTML=skins.map(s=>{let owned=save.owned.includes(s.name);return `<div class="card"><div class="skin">${s.icon}</div><h3>${s.name}</h3><p class="muted small">${s.desc}</p><div class="row"><b>${s.price?('🪙 '+s.price):'Gratuit'}</b><button ${save.skin===s.name?'disabled':''} onclick="buySkin('${s.name}')">${save.skin===s.name?'Echipat':owned?'Echipează':'Cumpără'}</button></div></div>`}).join('')+`<div class="card"><h3>🔋 Baterie mai mare</h3><p class="muted small">+15% baterie pentru fiecare nivel.</p><div class="row"><b>🪙 ${(save.upgrades.battery+1)*100}</b><button onclick="buyUpgrade('battery')">Îmbunătățește</button></div><p>Nivel: ${save.upgrades.battery}</p></div><div class="card"><h3>🔦 Fascicul mai puternic</h3><p class="muted small">Umbra se retrage de la distanță mai mare.</p><div class="row"><b>🪙 ${(save.upgrades.range+1)*130}</b><button onclick="buyUpgrade('range')">Îmbunătățește</button></div><p>Nivel: ${save.upgrades.range}</p></div>`;}
+function buySkin(name){let s=skins.find(x=>x.name===name);if(!s)return;if(!save.owned.includes(name)){if(save.coins<s.price){alert('Nu ai suficiente monede. Joacă o expediție sau completează misiuni!');return;}save.coins-=s.price;save.owned.push(name);}save.skin=name;persist();}
+function buyUpgrade(id){let price=(save.upgrades[id]+1)*(id==='battery'?100:130);if(save.coins<price){alert('Nu ai suficiente monede încă.');return;}save.coins-=price;save.upgrades[id]++;persist();}
+function renderFriends(){$('friendList').innerHTML=save.friends.length?save.friends.map((f,i)=>`<div class="row card" style="margin:6px 0"><span>👤 ${escapeHtml(f)}</span><button onclick="removeFriend(${i})">Șterge</button></div>`).join(''):'<p class="muted">Nu ai adăugat prieteni încă.</p>';}
+function escapeHtml(s){return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
+function addFriend(){let n=$('friendName').value.trim();if(!n)return;if(save.friends.some(f=>f.toLowerCase()===n.toLowerCase())){alert('Acest nume este deja în listă.');return;}save.friends.push(n);$('friendName').value='';persist();}
+function removeFriend(i){save.friends.splice(i,1);persist();}
+function renderBadges(){let arr=[['🌱','Primul pas',save.runs>=1],['🪙','Vânător de monede',save.earned>=100],['🧿','Arheolog',save.relics>=5],['🏅','Veteran',save.level>=5],['🌲','Cuceritorul pădurii',save.unlocked>=3],['👑','Legenda',save.best>=1000]];$('badges').innerHTML=arr.map(a=>`<div class="card" style="opacity:${a[2]?1:.4}"><div style="font-size:28px">${a[0]}</div><b>${a[1]}</b><div class="small">${a[2]?'Deblocată':'Încă blocată'}</div></div>`).join('');}
+function addItem(type,x,y){game.items.push({type,x,y,got:false,phase:Math.random()*6});}
+function startGame(){cancelAnimationFrame(game.raf);let z=zones[(save.zone||1)-1];game={running:true,paused:false,over:false,x:70,y:240,hp:3,battery:Math.min(100,100+save.upgrades.battery*15),coins:0,relics:0,seconds:0,score:0,flash:0,shadowX:680,shadowY:Math.random()*400+40,items:[],trees:[],zone:save.zone||1,last:performance.now(),raf:0};
+for(let i=0;i<13;i++){game.trees.push({x:100+Math.random()*650,y:Math.random()*440,r:12+Math.random()*20});}
+for(let i=0;i<18;i++)addItem('coin',140+Math.random()*600,35+Math.random()*410);
+for(let i=0;i<5;i++)addItem('battery',160+Math.random()*580,35+Math.random()*410);
+for(let i=0;i<3;i++)addItem('relic',220+Math.random()*500,40+Math.random()*400);
+$('gameMessage').textContent='Găsește 3 relicve și ajunge la poarta din dreapta. Ferește-te de Umbră!';showView('play');game.raf=requestAnimationFrame(loop);}
+function togglePause(){if(!game.running)return;game.paused=!game.paused;$('gameMessage').textContent=game.paused?'Pauză. Apasă din nou pentru a continua.':'Ai grijă, Umbra se apropie!';if(!game.paused){game.last=performance.now();game.raf=requestAnimationFrame(loop);}draw();}
+function endGame(win){if(game.over)return;game.over=true;game.running=false;cancelAnimationFrame(game.raf);let earned=game.coins+(win?50+game.zone*10:0);save.coins+=earned;save.earned+=earned;save.runs++;save.best=Math.max(save.best,game.score);save.relics+=game.relics;save.missions.coins+=game.coins;save.missions.runs++;save.missions.relics+=game.relics;save.missions.survive+=Math.floor(game.seconds);xpAdd(Math.floor(game.score/10)+(win?50:10));if(win&&save.unlocked<6)save.unlocked=Math.max(save.unlocked,game.zone+1);persist();$('gameMessage').innerHTML=win?`<span class="good">EXPEDIȚIE REUȘITĂ!</span> Ai scăpat din zonă. +${earned} monede și XP!`:`<span class="danger">TE-A PRINS UMBRA!</span> Ai obținut ${game.score} puncte și ${earned} monede. Încearcă din nou!`;draw();}
+const keys={};window.addEventListener('keydown',e=>{let k=e.key.toLowerCase();keys[k]=true;if(['arrowup','arrowdown','arrowleft','arrowright',' '].includes(k))e.preventDefault();if(k===' ')game.flash=0.65;});window.addEventListener('keyup',e=>keys[e.key.toLowerCase()]=false);
+const hold=(id,key)=>{let b=$(id);const on=e=>{e.preventDefault();keys[key]=true;};const off=e=>{e.preventDefault();keys[key]=false;};b.addEventListener('pointerdown',on);['pointerup','pointerleave','pointercancel'].forEach(ev=>b.addEventListener(ev,off));};
+hold('left','arrowleft');hold('right','arrowright');hold('up','arrowup');hold('down','arrowdown');
+$('light').addEventListener('pointerdown',e=>{e.preventDefault();game.flash=.8;});
+function loop(now){if(!game.running||game.paused)return;let dt=Math.min((now-game.last)/1000,.05);game.last=now;update(dt);draw();game.raf=requestAnimationFrame(loop);}
+function update(dt){game.seconds+=dt;game.battery=Math.max(0,game.battery-dt*(.5+game.zone*.08));game.score=Math.floor(game.seconds*2+game.coins*5+game.relics*80);game.flash=Math.max(0,game.flash-dt);
+let speed=165;let dx=0,dy=0;if(keys.arrowleft||keys.a)dx--;if(keys.arrowright||keys.d)dx++;if(keys.arrowup||keys.w)dy--;if(keys.arrowdown||keys.s)dy++;let len=Math.hypot(dx,dy)||1;game.x=Math.max(18,Math.min(782,game.x+dx/len*speed*dt));game.y=Math.max(18,Math.min(462,game.y+dy/len*speed*dt));
+let chase=30+game.zone*7;let ddx=game.x-game.shadowX,ddy=game.y-game.shadowY,d=Math.hypot(ddx,ddy)||1;let retreat=game.flash>0&&d<190+save.upgrades.range*25;if(retreat){game.shadowX-=ddx/d*chase*2*dt;game.shadowY-=ddy/d*chase*2*dt;}else{game.shadowX+=ddx/d*chase*dt;game.shadowY+=ddy/d*chase*dt;}game.shadowX=Math.max(10,Math.min(790,game.shadowX));game.shadowY=Math.max(10,Math.min(470,game.shadowY));
+if(d<23){game.hp--;game.shadowX=750;game.shadowY=Math.random()*440+20;game.battery=Math.max(0,game.battery-12);$('gameMessage').textContent='Umbra te-a atins! Ai pierdut o inimă și baterie.';if(game.hp<=0){endGame(false);return;}}
+for(let it of game.items){if(it.got)continue;if(Math.hypot(game.x-it.x,game.y-it.y)<22){it.got=true;if(it.type==='coin'){game.coins++;}if(it.type==='battery'){game.battery=Math.min(100+save.upgrades.battery*15,game.battery+22);}if(it.type==='relic'){game.relics++;$('gameMessage').textContent='Ai găsit o relicvă! '+game.relics+'/3';}}}
+if(game.battery<=0&&game.flash<=0)game.flash=0;
+if(game.x>765&&game.relics>=3){endGame(true);return;}if(game.x>765&&game.relics<3&&game.y>0){game.x=750;$('gameMessage').textContent='Poarta este sigilată. Mai găsește '+(3-game.relics)+' relicve!';}
+$('hp').textContent=game.hp;$('battery').textContent=Math.floor(game.battery);$('runCoins').textContent=game.coins;$('relics').textContent=game.relics;$('timer').textContent=Math.floor(game.seconds);}
+function draw(){let w=canvas.width,h=canvas.height;ctx.clearRect(0,0,w,h);let grd=ctx.createLinearGradient(0,0,w,h);grd.addColorStop(0,zones[game.zone-1]?.color||'#071c26');grd.addColorStop(1,'#02070e');ctx.fillStyle=grd;ctx.fillRect(0,0,w,h);
+ctx.strokeStyle='#163746';ctx.lineWidth=1;for(let i=0;i<25;i++){ctx.beginPath();ctx.moveTo(i*37,0);ctx.lineTo(i*37,h);ctx.stroke();}for(let i=0;i<15;i++){ctx.beginPath();ctx.moveTo(0,i*35);ctx.lineTo(w,i*35);ctx.stroke();}
+for(let t of game.trees){ctx.fillStyle='#06100f';ctx.beginPath();ctx.arc(t.x,t.y,t.r,0,Math.PI*2);ctx.fill();ctx.strokeStyle='#1b4a3b';ctx.stroke();}
+ctx.fillStyle='#5a4023';ctx.fillRect(770,0,30,h);ctx.fillStyle='#ffce4b';ctx.fillRect(770,0,5,h);ctx.fillStyle='#e5f6ff';ctx.font='14px system-ui';ctx.fillText(game.relics>=3?'IEȘIRE':'IEȘIRE 🔒',690,22);
+for(let it of game.items){if(it.got)continue;let pulse=Math.sin(game.seconds*4+it.phase)*3;ctx.beginPath();ctx.arc(it.x,it.y, it.type==='relic'?9:5+pulse*.3,0,Math.PI*2);ctx.fillStyle=it.type==='coin'?'#ffd23f':it.type==='battery'?'#5bf0b5':'#60caff';ctx.shadowBlur=12;ctx.shadowColor=ctx.fillStyle;ctx.fill();ctx.shadowBlur=0;if(it.type==='relic'){ctx.strokeStyle='#d9f8ff';ctx.stroke();}}
+let skin=skins.find(s=>s.name===save.skin)||skins[0];ctx.save();ctx.translate(game.x,game.y);ctx.fillStyle='#d6e6ed';ctx.beginPath();ctx.arc(0,-8,7,0,Math.PI*2);ctx.fill();ctx.fillStyle=skin.color;ctx.fillRect(-8,0,16,17);ctx.fillStyle='#182d3c';ctx.fillRect(2,4,15,7);ctx.restore();
+ctx.fillStyle='#07040d';ctx.beginPath();ctx.arc(game.shadowX,game.shadowY,18,0,Math.PI*2);ctx.fill();ctx.fillStyle='#ff476c';ctx.shadowBlur=12;ctx.shadowColor='#ff174c';ctx.fillRect(game.shadowX-8,game.shadowY-4,5,3);ctx.fillRect(game.shadowX+4,game.shadowY-4,5,3);ctx.shadowBlur=0;
+let lightRadius=(game.flash>0?220:70)+save.upgrades.range*15;if(game.battery<=0)lightRadius=35;let light=ctx.createRadialGradient(game.x,game.y,5,game.x,game.y,lightRadius);light.addColorStop(0,'rgba(255,240,166,.28)');light.addColorStop(.5,'rgba(255,220,100,.08)');light.addColorStop(1,'rgba(0,0,0,.86)');ctx.fillStyle=light;ctx.fillRect(0,0,w,h);
+if(game.paused||(!game.running&&game.over)){ctx.fillStyle='#020711bb';ctx.fillRect(0,0,w,h);ctx.textAlign='center';ctx.fillStyle='#fff';ctx.font='bold 30px system-ui';ctx.fillText(game.over?'EXPEDIȚIE ÎNCHEIATĂ':'PAUZĂ',w/2,h/2);ctx.font='16px system-ui';ctx.fillText('Apasă „Reîncepe expediția” pentru o nouă rundă',w/2,h/2+30);ctx.textAlign='left';}}
+function resetSave(){if(!confirm('Sigur vrei să ștergi tot progresul?'))return;localStorage.removeItem(SAVEKEY);save={...defaultSave,owned:['Standard'],friends:[],claimed:[],missions:{coins:0,runs:0,relics:0,survive:0},upgrades:{battery:0,range:0}};persist();}
+renderAll();draw();
+</script>
+</body>
+</html>
